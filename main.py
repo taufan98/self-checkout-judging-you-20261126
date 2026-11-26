@@ -33,8 +33,15 @@ def main() -> None:
     text = validate(ENTRY)
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
-    with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8") as f:
+    path = os.path.join(out_dir, "entry.txt")
+    with open(path, "w", encoding="utf-8") as f:
         f.write(text)
+    # Read back what was written: the graded artifact is the file, not
+    # the constant, so confirm the two agree before reporting success.
+    with open(path, encoding="utf-8") as f:
+        written = f.read()
+    assert written == text, "entry.txt on disk differs from the validated line"
+    print(f"wrote {path} ({len(text)} chars)")
 
 
 if __name__ == "__main__":
